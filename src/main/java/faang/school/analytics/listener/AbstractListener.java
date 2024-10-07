@@ -1,6 +1,7 @@
 package faang.school.analytics.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.analytics.exception.MessageProcessingException;
 import faang.school.analytics.mapper.AnalyticsEventMapper;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.service.AnalyticsEventService;
@@ -19,7 +20,9 @@ public abstract class AbstractListener<T> implements MessageListener {
     private final AnalyticsEventService analyticsEventService;
     protected final AnalyticsEventMapper analyticsEventMapper;
 
-    protected AbstractListener(ObjectMapper objectMapper, AnalyticsEventService analyticsEventService, AnalyticsEventMapper analyticsEventMapper) {
+    protected AbstractListener(ObjectMapper objectMapper,
+                               AnalyticsEventService analyticsEventService,
+                               AnalyticsEventMapper analyticsEventMapper) {
         this.objectMapper = objectMapper;
         this.analyticsEventService = analyticsEventService;
         this.analyticsEventMapper = analyticsEventMapper;
@@ -32,7 +35,7 @@ public abstract class AbstractListener<T> implements MessageListener {
             event = listenEvent(message);
         } catch (IOException e) {
             log.warn("Unsuccessful mapping", e);
-            throw new RuntimeException(e);
+            throw new MessageProcessingException("Error processing message", e);
         }
         AnalyticsEvent analyticsEvent = mapToAnalyticsEvent(event);
         saveAnalyticsEvent(analyticsEvent);
