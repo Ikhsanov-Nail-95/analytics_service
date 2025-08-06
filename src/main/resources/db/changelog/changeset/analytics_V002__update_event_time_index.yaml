@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: drop-analytics-events-idx
+      author: nail
+      changes:
+        - dropIndex:
+            indexName: events_idx
+            tableName: analytics_event
+
+  - changeSet:
+      id: create-analytics-event-time-index
+      author: nail
+      changes:
+        - createIndex:
+            indexName: events_time_idx
+            tableName: analytics_event
+            columns:
+              - column:
+                  name: receiver_id
+              - column:
+                  name: event_type
+              - column:
+                  name: event_time

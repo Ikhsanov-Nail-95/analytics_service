@@ -2,27 +2,27 @@ package faang.school.analytics.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.analytics.config.redis.EventTopic;
-import faang.school.analytics.event.FollowerEvent;
+import faang.school.analytics.event.LikeEvent;
 import faang.school.analytics.mapper.AnalyticsEventMapper;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.service.AnalyticsEventService;
 import org.springframework.stereotype.Service;
 
-@EventTopic("follower-event")
+@EventTopic("like-event")
 @Service
-public class FollowerEventListener extends AbstractListener<FollowerEvent> {
+public class LikeEventListener extends AbstractListener<LikeEvent> {
 
-    public FollowerEventListener(AnalyticsEventMapper analyticsEventMapper,
-                                 ObjectMapper objectMapper,
-                                 AnalyticsEventService analyticsEventService) {
+    public LikeEventListener(AnalyticsEventMapper analyticsEventMapper,
+                             ObjectMapper objectMapper,
+                             AnalyticsEventService analyticsEventService) {
         super(analyticsEventMapper,
-                FollowerEvent.class,
+                LikeEvent.class,
                 objectMapper,
                 analyticsEventService);
     }
 
     @Override
-    protected AnalyticsEvent mapDtoToEvent(FollowerEvent dto) {
+    protected AnalyticsEvent mapDtoToEvent(LikeEvent dto) {
         return analyticsEventMapper.toAnalyticsEvent(dto);
     }
 

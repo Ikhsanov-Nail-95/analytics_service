@@ -1,7 +1,7 @@
 package faang.school.analytics.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.analytics.event.PremiumBoughtEvent;
+import faang.school.analytics.event.ProfileAppearedInSearchEvent;
 import faang.school.analytics.exception.EventDeserializationException;
 import faang.school.analytics.mapper.AnalyticsEventMapper;
 import faang.school.analytics.model.AnalyticsEvent;
@@ -16,11 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PremiumBoughtEventListenerTest {
+class ProfileAppearedInSearchEventListenerTest {
 
     @Mock
     private AnalyticsEventMapper analyticsEventMapper;
@@ -30,36 +30,37 @@ class PremiumBoughtEventListenerTest {
     private AnalyticsEventService analyticsEventService;
 
     @InjectMocks
-    private PremiumBoughtEventListener premiumBoughtEventListener;
+    private ProfileAppearedInSearchEventListener listener;
 
     @Test
-    @DisplayName("Successful processing of PremiumBoughtEvent")
+    @DisplayName("Successful processing of ProfileAppearedInSearchEvent")
     void testHandleMessage_success() throws Exception {
-        String json = "{\"userId\": 42, \"purchasedAt\": \"2025-08-05T12:00:00\"}";
-        PremiumBoughtEvent event = PremiumBoughtEvent.builder()
-                .userId(42L)
-                .purchasedAt(ZonedDateTime.now())
+        String json = "{\"viewerId\": 42, \"profileId\": 101, \"viewedAt\": \"2025-08-05T10:15:30\"}";
+        ProfileAppearedInSearchEvent dto = ProfileAppearedInSearchEvent.builder()
+                .viewedUserId(42L)
+                .searchingUserId(101L)
+                .appearedAt(ZonedDateTime.now())
                 .build();
 
         AnalyticsEvent analyticsEvent = AnalyticsEvent.builder().build();
 
-        when(objectMapper.readValue(json, PremiumBoughtEvent.class)).thenReturn(event);
-        when(analyticsEventMapper.toAnalyticsEvent(event)).thenReturn(analyticsEvent);
+        when(objectMapper.readValue(json, ProfileAppearedInSearchEvent.class)).thenReturn(dto);
+        when(analyticsEventMapper.toAnalyticsEvent(dto)).thenReturn(analyticsEvent);
 
-        premiumBoughtEventListener.handleMessage(json);
+        listener.handleMessage(json);
 
         verify(analyticsEventService).saveEvent(analyticsEvent);
     }
 
     @Test
-    @DisplayName("Failure during JSON parsing of PremiumBoughtEvent")
+    @DisplayName("Failure during JSON parsing of ProfileAppearedInSearchEvent")
     void testHandleMessage_failure_dueToParsing() throws Exception {
         String json = "invalid-json";
 
-        when(objectMapper.readValue(json, PremiumBoughtEvent.class))
-                .thenAnswer(invocation -> { throw new IOException("Bad JSON"); });
+        when(objectMapper.readValue(json, ProfileAppearedInSearchEvent.class))
+                .thenAnswer(invocation -> { throw new IOException("Malformed JSON"); });
 
-        assertThrows(EventDeserializationException.class, () -> premiumBoughtEventListener.handleMessage(json));
+        assertThrows(EventDeserializationException.class, () -> listener.handleMessage(json));
 
         verifyNoInteractions(analyticsEventMapper);
         verifyNoInteractions(analyticsEventService);

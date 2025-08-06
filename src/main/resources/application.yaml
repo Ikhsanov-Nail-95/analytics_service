@@ -1,4 +1,11 @@
+server:
+  port: 8086
+
 spring:
+  mvc:
+    servlet:
+      path: /api/v1
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -21,18 +28,23 @@ spring:
     redis:
       port: 6379
       host: localhost
+      # Каналы для Pub/Sub механизма Redis
       channels:
-        profile_view_channel:
-          name: profile_view_channel
-        follower_channel:
-          name: follower_channel
-        profile_search_channel:
-          name: profile_search_channel
-        premium_bought_channel:
-          name: premium_bought_channel
+        comment-event: "app:comment:created"
+        follower-event: "app:user:follower-added"
+        like-event: "app:post:liked"
+        post-view-event: "app:post:viewed"
+        premium-bought-event: "app:user:premium-purchased"
+        profile-appeared-in-search-event: "app:user:profile:appeared-in-search"
+        profile-view-event: "app:user:profile:viewed"
 
-server:
-  port: 8086
+  task:
+    execution:
+      pool:
+        core-size: 10
+        max-size: 50
+        queue-capacity: 100
+        threadNamePrefix: "RedisExecutor-"
 
 logging:
   level:

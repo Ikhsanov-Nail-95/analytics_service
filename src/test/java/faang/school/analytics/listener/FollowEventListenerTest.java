@@ -1,57 +1,62 @@
 package faang.school.analytics.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.analytics.dto.FollowerEvent;
+import faang.school.analytics.event.FollowerEvent;
+import faang.school.analytics.exception.EventDeserializationException;
 import faang.school.analytics.mapper.AnalyticsEventMapper;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.service.AnalyticsEventService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
 
 import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class FollowEventListenerTest {
+class FollowerEventListenerTest {
+
     @Mock
     private ObjectMapper objectMapper;
     @Mock
     private AnalyticsEventMapper analyticsEventMapper;
     @Mock
     private AnalyticsEventService analyticsEventService;
-    @Mock
-    private Message message;
+
     @InjectMocks
     private FollowerEventListener followerEventListener;
 
     @Test
-    public void testOnMessage_success() throws IOException {
+    @DisplayName("Successful processing of the followerEvent")
+    void testHandleMessage_success() throws IOException {
+        String json = "{\"followerId\": 123, \"followeeId\": 456}";
+        FollowerEvent mockEvent = new FollowerEvent(); // заполни, если нужно
+        AnalyticsEvent mappedEvent = new AnalyticsEvent(); // тоже можно заполнить
 
-        byte[] pattern = new byte[]{};
+        when(objectMapper.readValue(json, FollowerEvent.class)).thenReturn(mockEvent);
+        when(analyticsEventMapper.toAnalyticsEvent(mockEvent)).thenReturn(mappedEvent);
 
-        when(objectMapper.readValue(message.getBody(), FollowerEvent.class)).thenReturn(new FollowerEvent());
-        when(analyticsEventMapper.toAnalyticsEvent(any(FollowerEvent.class))).thenReturn(new AnalyticsEvent());
+        followerEventListener.handleMessage(json);
 
-        followerEventListener.onMessage(message, pattern);
-        verify(analyticsEventService).saveAnalyticsEvent(Mockito.any(AnalyticsEvent.class));
-
+        verify(analyticsEventService).saveEvent(mappedEvent);
     }
 
     @Test
-    public void testOnMessage_failure() throws IOException {
+    @DisplayName("Unsuccessful processing: error during parsing JSON")
+    void testHandleMessage_failure_dueToParsing() throws IOException {
+        String json = "invalid-json";
 
-        byte[] pattern = new byte[]{};
-        when(objectMapper.readValue(message.getBody(), FollowerEvent.class)).thenThrow(IOException.class);
-        assertThrows(RuntimeException.class, () -> followerEventListener.onMessage(message, pattern));
+        when(objectMapper.readValue(json, FollowerEvent.class))
+                .thenAnswer(invocation -> { throw new IOException("Bad JSON"); });
 
+        assertThrows(EventDeserializationException.class, () -> followerEventListener.handleMessage(json));
+
+        verifyNoInteractions(analyticsEventMapper);
+        verifyNoInteractions(analyticsEventService);
     }
 }

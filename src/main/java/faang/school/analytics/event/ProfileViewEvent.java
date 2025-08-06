@@ -1,9 +1,9 @@
-package faang.school.analytics.dto;
+package faang.school.analytics.event;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Setter
 @Getter
@@ -17,6 +17,6 @@ public class ProfileViewEvent {
     @NotNull
     private long observerId;
     @NotNull
-    private LocalDateTime viewedAt;
+    private ZonedDateTime viewedAt;
 
 }
