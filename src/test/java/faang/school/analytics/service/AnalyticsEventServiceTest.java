@@ -10,14 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AnalyticsEventServiceTest {
+class AnalyticsEventServiceTest {
 
     @Mock
     private AnalyticsEventRepository repository;
@@ -27,20 +25,20 @@ public class AnalyticsEventServiceTest {
     private AnalyticsEvent analyticsEvent;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         analyticsEvent = AnalyticsEvent.builder()
                 .receiverId(1L)
                 .actorId(2L)
-                .receivedAt(LocalDateTime.now())
+                .receivedAt(ZonedDateTime.now())
                 .build();
     }
 
     @Test
     @DisplayName("Checking that the object is saved")
-    public void testSave() {
+    void testSaveEvent() {
         when(repository.save(analyticsEvent)).thenReturn(analyticsEvent);
 
-        service.saveAnalyticsEvent(analyticsEvent);
+        service.saveEvent(analyticsEvent);
 
         verify(repository, times(1)).save(analyticsEvent);
     }

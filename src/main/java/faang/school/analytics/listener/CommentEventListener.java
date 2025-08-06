@@ -1,34 +1,29 @@
 package faang.school.analytics.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.analytics.dto.CommentEvent;
+import faang.school.analytics.config.redis.EventTopic;
+import faang.school.analytics.event.CommentEvent;
 import faang.school.analytics.mapper.AnalyticsEventMapper;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.service.AnalyticsEventService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
-@Component
-@Slf4j
+@EventTopic("comment-event")
+@Service
 public class CommentEventListener extends AbstractListener<CommentEvent> {
 
-    public CommentEventListener(ObjectMapper objectMapper,
-                                AnalyticsEventMapper analyticsEventMapper,
+    public CommentEventListener(AnalyticsEventMapper analyticsEventMapper,
+                                ObjectMapper objectMapper,
                                 AnalyticsEventService analyticsEventService) {
-        super(objectMapper, analyticsEventService, analyticsEventMapper);
+        super(analyticsEventMapper,
+                CommentEvent.class,
+                objectMapper,
+                analyticsEventService);
     }
 
     @Override
-    protected CommentEvent listenEvent(Message message) throws IOException {
-        return objectMapper.readValue(message.getBody(), CommentEvent.class);
-    }
-
-    @Override
-    protected AnalyticsEvent mapToAnalyticsEvent(CommentEvent event) {
-        return analyticsEventMapper.entityToAnalyticsEvent(event);
+    protected AnalyticsEvent mapDtoToEvent(CommentEvent dto) {
+        return analyticsEventMapper.toAnalyticsEvent(dto);
     }
 
 }

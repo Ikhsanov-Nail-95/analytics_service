@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/changeset/analytics_V001__initial.sql
+      file: db/changelog/changeset/analytics_V001__initial.yaml
+  - include:
+      file: db/changelog/changeset/analytics_V002__update_event_time_index.yaml

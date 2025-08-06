@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-analytics-event-table
+      author: nail
+      changes:
+        - createTable:
+            tableName: analytics_event
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: receiver_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: actor_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: event_type
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: event_time
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+              - column:
+                  name: received_at
+                  type: timestamptz
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: create-analytics-event-index
+      author: nail
+      changes:
+        - createIndex:
+            indexName: events_idx
+            tableName: analytics_event
+            columns:
+              - column:
+                  name: receiver_id
+              - column:
+                  name: event_type
+              - column:
+                  name: received_at

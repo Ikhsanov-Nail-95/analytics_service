@@ -1,9 +1,10 @@
-package faang.school.analytics.dto;
+package faang.school.analytics.event;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Setter
 @Getter
@@ -17,6 +18,7 @@ public class FollowerEvent {
     @NotNull
     private long followeeId;
     @NotNull
-    private LocalDateTime subscriptionDateTime;
+    @PastOrPresent
+    private ZonedDateTime subscriptionDateTime;
 
 }
