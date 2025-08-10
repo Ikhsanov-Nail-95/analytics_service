@@ -50,6 +50,7 @@ logging:
   level:
     root: info
 
+# Feign-клиенты
 project-service:
   host: localhost
   port: 8082

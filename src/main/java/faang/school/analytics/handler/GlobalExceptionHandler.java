@@ -50,6 +50,18 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(MissingRedisTopicException.class)
+    public ProblemDetail handleMissingRedisTopicException(MissingRedisTopicException ex, HttpServletRequest request) {
+        return buildProblemDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Missing Redis Topic",
+                ex.getMessage(),
+                "/api/v1/errors/missing-redis-topic",
+                ex.getClass().getSimpleName(),
+                request.getRequestURI()
+        );
+    }
+
     @ExceptionHandler(InvalidEventTypeException.class)
     public ProblemDetail handleInvalidEventTypeException(InvalidEventTypeException ex, HttpServletRequest request) {
         return buildProblemDetail(

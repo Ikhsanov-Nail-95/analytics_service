@@ -45,21 +45,21 @@ public class RedisListenersConfig {
         container.setConnectionFactory(redisConnectionFactory);
         container.setTaskExecutor(redisTaskExecutor);
 
-        Map<String, Object> listeners = beanFactory.getBeansWithAnnotation(EventTopic.class);
-        for (Object listenerBean : listeners.values()) {
-            Class<?> listenerClass = listenerBean.getClass();
-            String key = listenerClass.getAnnotation(EventTopic.class).value();
-            String topicName = redisChannelsProperties.getChannels().get(key);
+        Map<String, Object> annotatedBeans = beanFactory.getBeansWithAnnotation(EventTopic.class);
+        for (Object annotatedListener : annotatedBeans.values()) {
+            Class<?> targetClass = annotatedListener.getClass();
+            String channelKey = targetClass.getAnnotation(EventTopic.class).value();
+            String channelPattern = redisChannelsProperties.getChannels().get(channelKey);
 
-            if (topicName == null) {
-                throw new MissingRedisTopicException(key);
+            if (channelPattern == null) {
+                throw new MissingRedisTopicException(channelKey);
             }
 
-            MessageListenerAdapter adapter = new MessageListenerAdapter(listenerBean, "handleMessage");
+            MessageListenerAdapter adapter = new MessageListenerAdapter(annotatedListener, "handleMessage");
             adapter.setSerializer(new StringRedisSerializer());
             adapter.afterPropertiesSet();
 
-            container.addMessageListener(adapter, new PatternTopic(topicName));
+            container.addMessageListener(adapter, new PatternTopic(channelPattern));
         }
 
         return container;
