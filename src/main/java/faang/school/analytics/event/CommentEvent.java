@@ -17,8 +17,13 @@ public class CommentEvent {
 
     @NotNull
     private Long postId;
+
+    @NotNull
+    private Long userId;
+
     @NotNull
     private Long commentId;
+
     @NotNull
     @PastOrPresent
     private ZonedDateTime commentedAt;

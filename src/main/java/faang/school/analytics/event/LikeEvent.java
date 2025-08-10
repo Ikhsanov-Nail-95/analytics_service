@@ -18,10 +18,16 @@ public class LikeEvent {
 
     @NotNull
     private Long entityId;
+
     @NotNull
     private LikeTargetType targetType;
+
+    @NotNull
+    private Long userId;
+
     @NotNull
     private Long likeId;
+
     @NotNull
     @PastOrPresent
     private ZonedDateTime likedAt;

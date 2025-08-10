@@ -15,8 +15,10 @@ public class ProfileAppearedInSearchEvent {
 
     @NotNull
     private Long viewedUserId;
+
     @NotNull
     private Long searchingUserId;
+
     @NotNull
     @PastOrPresent
     private ZonedDateTime appearedAt;

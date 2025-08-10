@@ -15,8 +15,10 @@ public class FollowerEvent {
 
     @NotNull
     private long followerId;
+
     @NotNull
     private long followeeId;
+
     @NotNull
     @PastOrPresent
     private ZonedDateTime subscriptionDateTime;
