@@ -15,6 +15,7 @@ public class PremiumBoughtEvent {
 
     @NotNull
     private Long userId;
+
     @NotNull
     @PastOrPresent
     private ZonedDateTime purchasedAt;

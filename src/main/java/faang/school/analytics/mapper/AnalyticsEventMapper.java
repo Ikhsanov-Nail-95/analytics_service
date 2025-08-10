@@ -14,15 +14,16 @@ public interface AnalyticsEventMapper {
     @Mapping(target = "id",                     ignore = true)
     @Mapping(target = "receivedAt",             ignore = true)
     @Mapping(source = "postId",                 target = "receiverId")
-    @Mapping(source = "commentId",              target = "actorId")
+    @Mapping(source = "userId",                 target = "actorId")
+    @Mapping(source = "commentId",              target = "subjectId")
     @Mapping(source = "commentedAt",            target = "eventTime")
     @Mapping(target = "eventType",              constant = "POST_COMMENT")
     AnalyticsEvent toAnalyticsEvent(CommentEvent dto);
 
     @Mapping(target = "id",                     ignore = true)
     @Mapping(target = "receivedAt",             ignore = true)
-    @Mapping(source = "followerId",             target = "receiverId")
-    @Mapping(source = "followeeId",             target = "actorId")
+    @Mapping(source = "followeeId",             target = "receiverId")
+    @Mapping(source = "followerId",             target = "actorId")
     @Mapping(source = "subscriptionDateTime",   target = "eventTime")
     @Mapping(target = "eventType",              constant = "FOLLOWER")
     AnalyticsEvent toAnalyticsEvent(FollowerEvent dto);
@@ -30,14 +31,15 @@ public interface AnalyticsEventMapper {
     @Mapping(target = "id",                     ignore = true)
     @Mapping(target = "receivedAt",             ignore = true)
     @Mapping(source = "entityId",               target = "receiverId")
-    @Mapping(source = "likeId",                 target = "actorId")
+    @Mapping(source = "userId",                 target = "actorId")
+    @Mapping(source = "likeId",                 target = "subjectId")
     @Mapping(source = "likedAt",                target = "eventTime")
     @Mapping(source = "targetType",             target = "eventType")
     AnalyticsEvent toAnalyticsEvent(LikeEvent dto);
 
     @Mapping(target = "id",                     ignore = true)
     @Mapping(target = "receivedAt",             ignore = true)
-    @Mapping(source = "postId",                 target = "receiverId")
+    @Mapping(source = "viewedPostId",           target = "receiverId")
     @Mapping(source = "viewerUserId",           target = "actorId")
     @Mapping(source = "viewedAt",               target = "eventTime")
     @Mapping(target = "eventType",              constant = "POST_VIEW")
@@ -61,8 +63,8 @@ public interface AnalyticsEventMapper {
 
     @Mapping(target = "id",                     ignore = true)
     @Mapping(target = "receivedAt",             ignore = true)
-    @Mapping(source = "observedId",             target = "actorId")
-    @Mapping(source = "observerId",             target = "receiverId")
+    @Mapping(source = "observedId",             target = "receiverId")
+    @Mapping(source = "observerId",             target = "actorId")
     @Mapping(source = "viewedAt",               target = "eventTime")
     @Mapping(target = "eventType",              constant = "PROFILE_VIEW")
     AnalyticsEvent toAnalyticsEvent(ProfileViewEvent dto);

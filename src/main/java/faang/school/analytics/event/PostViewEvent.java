@@ -16,9 +16,11 @@ import java.time.ZonedDateTime;
 public class PostViewEvent {
 
     @NotNull
-    private Long postId;
+    private Long viewedPostId;
+
     @NotNull
     private Long viewerUserId;
+
     @NotNull
     @PastOrPresent
     private ZonedDateTime viewedAt;

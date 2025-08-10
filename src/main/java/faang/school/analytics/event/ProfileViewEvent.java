@@ -13,9 +13,11 @@ import java.time.ZonedDateTime;
 public class ProfileViewEvent {
 
     @NotNull
-    private long observedId;
+    private Long observedId;
+
     @NotNull
-    private long observerId;
+    private Long observerId;
+
     @NotNull
     private ZonedDateTime viewedAt;
 

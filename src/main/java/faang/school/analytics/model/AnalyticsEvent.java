@@ -17,13 +17,16 @@ public class AnalyticsEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "receiver_id", nullable = false)
     private long receiverId;
 
     @Column(name = "actor_id", nullable = false)
     private long actorId;
+
+    @Column(name = "subject_id")
+    private Long subjectId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type", nullable = false)
