@@ -32,7 +32,7 @@ spring:
       channels:
         comment-event: "app:comment:created"
         follower-event: "app:user:follower-added"
-        like-event: "app:post:liked"
+        like-event: "app:entity:liked"
         post-view-event: "app:post:viewed"
         premium-bought-event: "app:user:premium-purchased"
         profile-appeared-in-search-event: "app:user:profile:appeared-in-search"
